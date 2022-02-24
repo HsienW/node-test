@@ -81,9 +81,13 @@ const server = http.createServer((request, respond) => {
     // respond.end('hello is end');
 });
 
-server.listen(port, ip, () => {
-    console.log('is run base on port 3000');
-});
+const start = function () {
+    server.listen(port, ip, () => {
+        console.log('is run base on port 3000');
+    });
+}
 
+
+module.exports = start;
 
 
