@@ -61,32 +61,61 @@ const server = http.createServer((request, respond) => {
         // }
 
         // 設定 etag
-        respond.setHeader('Cache-Control', 'no-cache')
-        // 透過 hash 加密產生 當作 etag 的 hash key
-        const hash = crypto.createHash('sha1').update('index.html').digest('hex');
-        respond.setHeader('Etag', hash);
-    
-        if(request.headers['if-none-match'] === hash){
-            console.log('Etag 協商有中....');
-            respond.statusCode = 304;
-            respond.end();
-            return
-        }
+        // respond.setHeader('Cache-Control', 'no-cache')
+        // // 透過 hash 加密產生 當作 etag 的 hash key
+        // const hash = crypto.createHash('sha1').update('index.html').digest('hex');
+        // respond.setHeader('Etag', hash);
+        //
+        // if(request.headers['if-none-match'] === hash){
+        //     console.log('Etag 協商有中....');
+        //     respond.statusCode = 304;
+        //     respond.end();
+        //     return
+        // }
 
         // const {url} = req
         if ('/' === url) {
             respond.end(`
-            <html>
+            <html lang="en">
                 <!-- <meta http-equiv='Refresh' content='5' /> -->
                 Html Update Time: ${updateTime()}
-                <script src='main.js'></script>
+                <script src='main.js'>
+                    console.log('244444');
+                    let xhr = new XMLHttpRequest()
+                    xhr.onreadystatechange = () => {
+                        if (xhr.readyState === 4){
+                            console.log('request ' + xhr.status + ' ' +xhr.responseText)
+                        }
+                    }
+                
+                    setInterval(() => {
+                        xhr.open('GET', '/index.js', true);
+                        xhr.send()
+                    },1000)
+                </script>
             </html>
             `)
         } else if (url === '/main.js') {
-            const content = `document.writeln('<br>JS   Update Time:${updateTime()}')`
 
             respond.statusCode = 200
-            respond.end(content)
+            respond.end(`
+                <html lang="en">
+                <head>
+                    <meta charset="utf-8">
+                    <title>Home</title>
+                </head>
+                <body>
+                <div>Home Page</div>
+                <script>
+                </script>
+                </body>
+                </html>
+            `);
+
+            // const content = `document.writeln('<br>JS   Update Time:${updateTime()}')`
+            //
+            // respond.statusCode = 200
+            // respond.end(content)
         } else if (url === '/favicon.ico') {
             console.log('favicon..')
             respond.end('')
